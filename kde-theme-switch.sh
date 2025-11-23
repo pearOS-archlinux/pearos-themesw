@@ -292,6 +292,12 @@ list_all() {
     echo "== State =="
     echo "mode: $(cat "$(dirname "$0")/state" 2>/dev/null || echo unknown)"
   fi
+  # Show saved accent if exists
+  if [ -f "$(dirname "$0")/accent" ]; then
+    echo
+    echo "== Accent =="
+    echo "accent: $(cat "$(dirname "$0")/accent" 2>/dev/null || echo unknown)"
+  fi
   echo
 
   echo "== Application Style (Qt widget style) =="
@@ -721,6 +727,10 @@ for section in cp.sections():
 
 sys.exit(0)
 PY
+      # Save selected accent to file (similar to state for dark/light)
+      ACCENT_FILE="$(dirname "$0")/accent"
+      printf "%s\n" "$preset" > "$ACCENT_FILE" || true
+      msg "Saved accent: $preset"
       # Re-apply ColorScheme according to current state (to keep scheme + accent in sync)
       if [ -f "$(dirname "$0")/state" ]; then
         state_mode="$(tr '[:upper:]' '[:lower:]' < "$(dirname "$0")/state" | tr -d '\n\r\t ' 2>/dev/null || echo "")"
